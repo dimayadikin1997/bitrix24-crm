@@ -10,7 +10,8 @@
     },
     "authors": [
         {
-            "name": "D.Yaikin"
+            "name": "D.Yaikin",
+            "email": "dimayadikin1997@gmail.com"
         }
     ],
     "minimum-stability": "dev",
