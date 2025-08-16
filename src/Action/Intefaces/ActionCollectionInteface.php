@@ -20,7 +20,13 @@ interface ActionCollectionInteface extends CollectionInterface
     
     /**
      * @param callable $fn
-     * @return CollectionInterface
+     * @return ActionCollectionInteface
      */
     public function filter(callable $fn) : ActionCollectionInteface;
+    
+    /**
+     * @param callable $fn
+     * @return ActionCollectionInteface
+     */
+    public function sort(callable $fn) : ActionCollectionInteface;
 }

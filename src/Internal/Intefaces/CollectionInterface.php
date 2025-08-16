@@ -80,6 +80,12 @@ interface CollectionInterface
     public function filter(callable $fn) : CollectionInterface;
     
     /**
+     * @param callable $fn
+     * @return CollectionInterface
+     */
+    public function sort(callable $fn) : CollectionInterface;
+    
+    /**
      * @return array
      */
     public function toJson() : array;

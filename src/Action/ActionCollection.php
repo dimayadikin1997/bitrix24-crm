@@ -29,10 +29,20 @@ class ActionCollection extends Collection implements ActionCollectionInteface
     
     /**
      * @param callable $fn
-     * @return CollectionInterface
+     * @return ActionCollectionInteface
      */
     public function filter(callable $fn) : ActionCollectionInteface
     {
         return parent::filter($fn);
+    }
+    
+    
+    /**
+     * @param callable $fn
+     * @return ActionCollectionInteface
+     */
+    public function sort(callable $fn) : ActionCollectionInteface
+    {
+        return parent::sort($fn);
     }
 }

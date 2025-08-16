@@ -10,6 +10,7 @@ use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionParamsInteface;
 use Yadikin\Bitrix24\Crm\Factory\Intefaces\FactoryInteface;
 use Yadikin\Bitrix24\Crm\Action\Support\ActionOperation;
 use Yadikin\Bitrix24\Crm\Action\Support\EventOperation;
+use Yadikin\Bitrix24\Crm\Action\Support\SortOperation;
 
 /**
  * @author dimay
@@ -70,6 +71,29 @@ interface ActionRegistryInteface
      */
     public function onAfterDelete($class, ?string $method = null, ?ActionParamsInteface $params = null, ?FactoryInteface $factory = null) : ActionRegistryInteface;
     
+    
+    /**
+     * @param int $value
+     * @return ActionRegistryInteface
+     */
+    public function sort(int $value) : ActionRegistryInteface;
+    
+    /**
+     * @param string $value
+     * @return ActionRegistryInteface
+     */
+    public function name(string $value) : ActionRegistryInteface;
+    
+    /**
+     * @return $this
+     */
+    public function enable();
+    
+    /**
+     * @return $this
+     */
+    public function disable();
+    
     /**
      * @param FactoryInteface $factory
      * @param type $class
@@ -82,49 +106,56 @@ interface ActionRegistryInteface
     public function on(FactoryInteface $factory, $class, ?string $method = null, ActionOperation $actionOperation, EventOperation $eventOperation, ?ActionParamsInteface $params = null) : ActionRegistryInteface;
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnBeforeAdd(?FactoryInteface $factory = null) : ActionCollectionInteface;
+    public function getOnBeforeAdd(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface;
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnAfterAdd(?FactoryInteface $factory = null) : ActionCollectionInteface;
+    public function getOnAfterAdd(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface;
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnBeforeUpdate(?FactoryInteface $factory = null) : ActionCollectionInteface;
+    public function getOnBeforeUpdate(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface;
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnAfterUpdate(?FactoryInteface $factory = null) : ActionCollectionInteface;
+    public function getOnAfterUpdate(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface;
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnBeforeDelete(?FactoryInteface $factory = null) : ActionCollectionInteface;
+    public function getOnBeforeDelete(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface;
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnAfterDelete(?FactoryInteface $factory = null) : ActionCollectionInteface;
+    public function getOnAfterDelete(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface;
     
     /**
      * @param FactoryInteface $factory
      * @param ActionOperation $actionOperation
      * @param EventOperation $eventOperation
+     * @param SortOperation $sort
      * @return ActionCollectionInteface
      */
-    public function getOn(FactoryInteface $factory, ActionOperation $actionOperation, EventOperation $eventOperation) : ActionCollectionInteface;
-    
+    public function getOn(FactoryInteface $factory, ActionOperation $actionOperation, EventOperation $eventOperation, SortOperation $sort = SortOperation::Asc) : ActionCollectionInteface;
+      
     /**
      * @return ActionCollectionInteface
      */

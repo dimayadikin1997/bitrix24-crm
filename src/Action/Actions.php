@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Yadikin\Bitrix24\Crm\Action;
 
 use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionRegistryInteface;
-
 use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionFactoryInteface;
-use Yadikin\Bitrix24\Crm\Action\ActionFactory;
-
-use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionCollectionInteface;
-use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionParamsInteface ;
-
-
 use Yadikin\Bitrix24\Crm\Factory\Intefaces\FactoryInteface;
+use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionCollectionInteface;
+use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionParamsInteface;
+use Yadikin\Bitrix24\Crm\Action\Intefaces\ActionInteface;
+
+
 use Yadikin\Bitrix24\Crm\Action\Support\ActionOperation;
 use Yadikin\Bitrix24\Crm\Action\Support\EventOperation;
+use Yadikin\Bitrix24\Crm\Action\Support\SortOperation;
+use Yadikin\Bitrix24\Crm\Action\ActionFactory;
 
 /**
  * Description of Actions
@@ -25,7 +25,10 @@ use Yadikin\Bitrix24\Crm\Action\Support\EventOperation;
 class Actions implements ActionRegistryInteface
 {
     /** @var ActionCollectionInteface[] */
-    public static array $actions = [];
+    protected static array $actions = [];
+    
+    /** @var ActionInteface */
+    protected ?ActionInteface $last = null;
     
     /** @var FactoryInteface|null */
     protected ?FactoryInteface $factory = null;
@@ -202,85 +205,137 @@ class Actions implements ActionRegistryInteface
         
         /** @var ActionCollectionInteface */
         $this->getFactoryCollection()->push($action);
-                
+
+        $this->last = $action;
+        
         return $this;
     }
     
     /**
+     * @param int $value
+     * @return ActionRegistryInteface
+     */
+    public function sort(int $value) : ActionRegistryInteface
+    {
+        $this->last->getParams()->setSort($value);
+        return $this;
+    }
+    
+    /**
+     * @param string $value
+     * @return ActionRegistryInteface
+     */
+    public function name(string $value) : ActionRegistryInteface
+    {
+        $this->last->getParams()->setName($value);
+        return $this;
+    }
+    
+    /**
+     * @return $this
+     */
+    public function enable()
+    {
+        $this->last->getParams()->setEnable(true);
+        return $this;
+    }
+    
+    /**
+     * @return $this
+     */
+    public function disable()
+    {
+        $this->last->getParams()->setEnable(false);
+        return $this;
+    }
+    
+    /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnBeforeAdd(?FactoryInteface $factory = null) : ActionCollectionInteface
+    public function getOnBeforeAdd(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface
     {
         return $this->getOn(
                 factory: $factory ?? $this->getFactory()
                 , actionOperation: ActionOperation::beforeSave
                 , eventOperation: EventOperation::Add
+                , sort: $sort
         );
     }
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnAfterAdd(?FactoryInteface $factory = null) : ActionCollectionInteface
+    public function getOnAfterAdd(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface
     {
         return $this->getOn(
                 factory: $factory ?? $this->getFactory()
                 , actionOperation: ActionOperation::afterSave
                 , eventOperation: EventOperation::Add
+                , sort: $sort
         );
     }
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnBeforeUpdate(?FactoryInteface $factory = null) : ActionCollectionInteface
+    public function getOnBeforeUpdate(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface
     {
         return $this->getOn(
                 factory: $factory ?? $this->getFactory()
                 , actionOperation: ActionOperation::beforeSave
                 , eventOperation: EventOperation::Update
+                , sort: $sort
         );
     }
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnAfterUpdate(?FactoryInteface $factory = null) : ActionCollectionInteface
+    public function getOnAfterUpdate(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface
     {
         return $this->getOn(
                 factory: $factory ?? $this->getFactory()
                 , actionOperation: ActionOperation::afterSave
                 , eventOperation: EventOperation::Update
+                , sort: $sort
         );
     }
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnBeforeDelete(?FactoryInteface $factory = null) : ActionCollectionInteface
+    public function getOnBeforeDelete(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface
     {
         return $this->getOn(
                 factory: $factory ?? $this->getFactory()
                 , actionOperation: ActionOperation::beforeSave
                 , eventOperation: EventOperation::Delete
+                , sort: $sort
         );
     }
     
     /**
+     * @param SortOperation $sort
      * @param FactoryInteface|null $factory
      * @return ActionCollectionInteface
      */
-    public function getOnAfterDelete(?FactoryInteface $factory = null) : ActionCollectionInteface
+    public function getOnAfterDelete(SortOperation $sort = SortOperation::Asc, ?FactoryInteface $factory = null) : ActionCollectionInteface
     {
         return $this->getOn(
                 factory: $factory ?? $this->getFactory()
                 , actionOperation: ActionOperation::afterSave
                 , eventOperation: EventOperation::Delete
+                , sort: $sort
         );
     }
     
@@ -288,14 +343,21 @@ class Actions implements ActionRegistryInteface
      * @param FactoryInteface $factory
      * @param ActionOperation $actionOperation
      * @param EventOperation $eventOperation
+     * @param SortOperation $sort
      * @return ActionCollectionInteface
      */
-    public function getOn(FactoryInteface $factory, ActionOperation $actionOperation, EventOperation $eventOperation) : ActionCollectionInteface
-    {        
+    public function getOn(FactoryInteface $factory, ActionOperation $actionOperation, EventOperation $eventOperation, SortOperation $sort = SortOperation::Asc) : ActionCollectionInteface
+    {   
         /** @var ActionCollectionInteface */
         return $this->getFactoryCollection()
+                ->filter(fn(/** @var ActionFactoryInteface */ $action) => $action->getParams()->getEnable())
                 ->filter(fn(/** @var ActionFactoryInteface */ $action) => $action->getActionOperation() === $actionOperation)
                 ->filter(fn(/** @var ActionFactoryInteface */ $action) => $action->getEventOperation() === $eventOperation)
+                ->sort(fn(/** @var ActionFactoryInteface */ $a, /** @var ActionFactoryInteface */$b) 
+                            => ($sort === SortOperation::Desc) 
+                                ? $b->getParams()->getSort() <=> $a->getParams()->getSort()
+                                : $a->getParams()->getSort() <=> $b->getParams()->getSort()
+                )
             ;
     }
     

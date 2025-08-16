@@ -142,8 +142,19 @@ class Collection implements \Countable, \Iterator, \ArrayAccess, CollectionInter
     
     public function filter(callable $fn) : CollectionInterface
     {
-        $filter = array_filter($this->items, $fn); 
-        return new static($filter); 
+        $items = array_filter($this->items, $fn); 
+        return new static($items); 
+    }
+    
+    /**
+     * @param callable $fn
+     * @return CollectionInterface
+     */
+    public function sort(callable $fn) : CollectionInterface
+    {
+        $items = $this->items;
+        usort($items, $fn); 
+        return new static($items); 
     }
     
     /**
