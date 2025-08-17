@@ -225,5 +225,6 @@ class OrderFactory extends Dynamic implements FactoryInteface
     }
 }
 ```
-
+### Результат
+![Результат](https://github.com/dimayadikin1997/bitrix24-crm/raw/main/images/Screenshot_1.png)
 
