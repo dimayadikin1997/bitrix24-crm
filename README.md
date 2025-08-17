@@ -228,3 +228,14 @@ class OrderFactory extends Dynamic implements FactoryInteface
 ### Результат
 ![Результат](https://github.com/dimayadikin1997/bitrix24-crm/blob/main/raw/main/images/Screenshot_1.png)
 
+### Добавить ещё 
+Тпереь для добавления новго Actions
+```php
+<?php
+/// файл init.php
+
+/// Так же продолжаем добавлять
+$actionsOrder->onBeforeDelete(new Order\OtherAction(), 'run');
+
+/// ....
+
