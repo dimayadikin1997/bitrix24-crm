@@ -17,32 +17,57 @@ namespace Your\Module\Crm\Service\Factory\Dynamic;
 
 use Bitrix\Crm\Service\Factory\Dynamic;
 use Bitrix\Crm\Service\Container;
+use Bitrix\Crm\Service\Context;
+use Bitrix\Crm\Service\Operation;
 use Bitrix\Crm\Model\Dynamic\TypeTable;
+use Bitrix\Crm\Item;
+
+use Yadikin\Bitrix24\Crm\Factory\Intefaces\FactoryInteface;
 
 class OrderFactory extends Dynamic implements FactoryInteface
 {
-	/** @var int */
-	protected int $entityTypeId = 1036; // Идентификатор типа смарт-процесса
+    /** @var int */
+    protected int $entityTypeId = 1036; // Идентификатор типа смарт-процесса
 
-	/// Требуется для класса Dynamic
-	public function __construct() 
+    /// Требуется для класса Dynamic
+    public function __construct() 
     {
-		$type = TypeTable::getByEntityTypeId($this->entityTypeId)->fetchObject();
+        $type = TypeTable::getByEntityTypeId($this->entityTypeId)->fetchObject();
 
         if (!is_null($type)) {
             parent::__construct($type);
         }
     }
 
-	/**
-	 * return string
-	 */
-	public function getInstanceCode() : string
-	{
-		/// Вернет "crm.service.factory.dynamic.1036"
-		$identifier = Container::getIdentifierByClassName(Dynamic::class, [$this->entityTypeId]);
-		return $identifier;
-	}
+    /**
+     * return string
+     */
+    public function getInstanceCode() : string
+    {
+        /// Вернет "crm.service.factory.dynamic.1036"
+        $identifier = Container::getIdentifierByClassName(Dynamic::class, [$this->entityTypeId]);
+        return $identifier;
+    }
+    
+    /// Переопределяем родительский метод
+    public function getAddOperation(Item $item, Context $context = null): Operation\Add
+    {
+        $operation = parent::getAddOperation($item, $context);
+
+        // добвляем Action`s
+
+        return $operation;
+    }
+
+    /// Переопределяем родительский метод
+    public function getUpdateOperation(Item $item, Context $context = null): Operation\Update
+    {
+        $operation = parent::getUpdateOperation($item, $context);
+
+        // добвляем Action`s
+
+        return $operation;
+    }
 }
 ```
 
@@ -59,7 +84,7 @@ $orderFactory = new Your\Module\Crm\Service\Factory\Dynamic\OrderFactory();
 $serviceLocator = \Bitrix\Main\DI\ServiceLocator::getInstance();
 
 $serviceLocator->addInstanceLazy($orderFactory->getInstanceCode(), [
-	'className' => $orderFactory,
+    'className' => $orderFactory,
 ]);
 
 /// ....
@@ -79,11 +104,15 @@ use Bitrix\Crm\Item;
 
 class OrderBaseAction 
 {
-	public function run(Item $item) : Result
-	{
-      /// Ваша бизнес-логика
-		  return new Result();
-	}
+    public function run(Item $item) : Result
+    {
+        $result = new Result();
+        
+        /// Ваша бизнес-логика
+        $result->addError(new Error("Пример ошибки!"));
+        
+        return $result;
+    }
 }
 ```
 ### Шаг 4. Добавляем Ваш Action в ActionRegistry
@@ -96,8 +125,8 @@ class OrderBaseAction
 
 $actionsOrder = \Yadikin\Bitrix24\Crm\Action\Actions::make(/** @var OrderFactory */$orderFactory);
 
-$actionsOrder->onBeforeAdd(new OrderBaseAction(), 'run'); // Вызовет метод run перед добавлением элемента в СП
-$actionsOrder->onBeforeUpdate(new OrderBaseAction(), 'run'); // Вызовет метод run перед редактированием элемента в СП
+$actionsOrder->onBeforeAdd(new \Your\Module\Crm\Service\Action\Order\OrderBaseAction(), 'run'); // Вызовет метод run перед добавлением элемента в СП
+$actionsOrder->onBeforeUpdate(new \Your\Module\Crm\Service\Action\Order\OrderBaseAction(), 'run'); // Вызовет метод run перед редактированием элемента в СП
 
 /// ....
 ```
@@ -110,42 +139,42 @@ namespace Your\Module\Crm\Service\Factory\Dynamic;
 
 use Bitrix\Crm\Service\Factory\Dynamic;
 use Bitrix\Crm\Service\Container;
-use Bitrix\Crm\Model\Dynamic\TypeTable;
-/// Добавляем 
 use Bitrix\Crm\Service\Context;
 use Bitrix\Crm\Service\Operation;
+use Bitrix\Crm\Model\Dynamic\TypeTable;
 use Bitrix\Crm\Item;
+use Yadikin\Bitrix24\Crm\Factory\Intefaces\FactoryInteface;
 
 class OrderFactory extends Dynamic implements FactoryInteface
 {
-	/** @var int */
-	protected int $entityTypeId = 1036; // Идентификатор типа смарт-процесса
+    /** @var int */
+    protected int $entityTypeId = 1036; // Идентификатор типа смарт-процесса
 
-	/// Требуется для класса Dynamic
-	public function __construct() 
+    /// Требуется для класса Dynamic
+    public function __construct() 
     {
-		$type = TypeTable::getByEntityTypeId($this->entityTypeId)->fetchObject();
+        $type = TypeTable::getByEntityTypeId($this->entityTypeId)->fetchObject();
 
         if (!is_null($type)) {
             parent::__construct($type);
         }
     }
 
-	/**
-	 * return string
-	 */
-	public function getInstanceCode() : string
-	{
-		/// Вернет "crm.service.factory.dynamic.1036"
-		$identifier = Container::getIdentifierByClassName(Dynamic::class, [$this->entityTypeId]);
-		return $identifier;
-	}
-
-  /// Переопределяем родительский метод
-  public function getAddOperation(Item $item, Context $context = null): Operation\Add
-  {
+    /**
+     * return string
+     */
+    public function getInstanceCode() : string
+    {
+        /// Вернет "crm.service.factory.dynamic.1036"
+        $identifier = Container::getIdentifierByClassName(Dynamic::class, [$this->entityTypeId]);
+        return $identifier;
+    }
+    
+    /// Переопределяем родительский метод
+    public function getAddOperation(Item $item, Context $context = null): Operation\Add
+    {
         $operation = parent::getAddOperation($item, $context);
-        
+
         // добвляем Action`s
         $actionsOrder = \Yadikin\Bitrix24\Crm\Action\Actions::make(/** @var OrderFactory */$this);
 
@@ -166,13 +195,13 @@ class OrderFactory extends Dynamic implements FactoryInteface
         }
 
         return $operation;
-  }
+    }
 
-  /// Переопределяем родительский метод
-  public function getUpdateOperation(Item $item, Context $context = null): Operation\Update
-  {
+    /// Переопределяем родительский метод
+    public function getUpdateOperation(Item $item, Context $context = null): Operation\Update
+    {
         $operation = parent::getUpdateOperation($item, $context);
-        
+
         // добвляем Action`s
         $actionsOrder = \Yadikin\Bitrix24\Crm\Action\Actions::make(/** @var OrderFactory */$this);
 
@@ -193,7 +222,7 @@ class OrderFactory extends Dynamic implements FactoryInteface
         }
 
         return $operation;
-  }
+    }
 }
 ```
 
