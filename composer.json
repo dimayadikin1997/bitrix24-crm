@@ -2,7 +2,7 @@
     "name": "dimayadikin1997/bitrix24-crm",
     "description": "Library dedicated to customization of Bitrix24 CRM",
     "type": "library",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Yadikin\\Bitrix24\\Crm\\": "src/"
@@ -15,5 +15,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "php": ">=8.1"
+    }
 }
