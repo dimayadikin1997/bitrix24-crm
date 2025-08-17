@@ -49,22 +49,22 @@ class OrderFactory extends Dynamic implements FactoryInteface
         return $identifier;
     }
     
-    /// Переопределяем родительский метод
+    /// Переопределить родительский метод
     public function getAddOperation(Item $item, Context $context = null): Operation\Add
     {
         $operation = parent::getAddOperation($item, $context);
 
-        // добвляем Action`s
+        // добавляем Action`s
 
         return $operation;
     }
 
-    /// Переопределяем родительский метод
+    /// Переопределить родительский метод
     public function getUpdateOperation(Item $item, Context $context = null): Operation\Update
     {
         $operation = parent::getUpdateOperation($item, $context);
 
-        // добвляем Action`s
+        // добавляем Action`s
 
         return $operation;
     }
@@ -125,8 +125,8 @@ class OrderBaseAction
 
 $actionsOrder = \Yadikin\Bitrix24\Crm\Action\Actions::make(/** @var OrderFactory */$orderFactory);
 
-$actionsOrder->onBeforeAdd(new \Your\Module\Crm\Service\Action\Order\OrderBaseAction(), 'run'); // Вызовет метод run перед добавлением элемента в СП
-$actionsOrder->onBeforeUpdate(new \Your\Module\Crm\Service\Action\Order\OrderBaseAction(), 'run'); // Вызовет метод run перед редактированием элемента в СП
+$actionsOrder->onBeforeAdd(new \Your\Module\Crm\Service\Action\Order\OrderBaseAction(), 'run'); // Вызывает метод run перед добавлением элемента в СП
+$actionsOrder->onBeforeUpdate(new \Your\Module\Crm\Service\Action\Order\OrderBaseAction(), 'run'); // Вызывает метод run перед редактированием элемента в СП
 
 /// ....
 ```
@@ -170,12 +170,12 @@ class OrderFactory extends Dynamic implements FactoryInteface
         return $identifier;
     }
     
-    /// Переопределяем родительский метод
+    /// Переопределить родительский метод
     public function getAddOperation(Item $item, Context $context = null): Operation\Add
     {
         $operation = parent::getAddOperation($item, $context);
 
-        // добвляем Action`s
+        // добавляем Action`s
         $actionsOrder = \Yadikin\Bitrix24\Crm\Action\Actions::make(/** @var OrderFactory */$this);
 
         foreach($actionsOrder->getOnBeforeAdd() as $action)
@@ -197,12 +197,12 @@ class OrderFactory extends Dynamic implements FactoryInteface
         return $operation;
     }
 
-    /// Переопределяем родительский метод
+    /// Переопределить родительский метод
     public function getUpdateOperation(Item $item, Context $context = null): Operation\Update
     {
         $operation = parent::getUpdateOperation($item, $context);
 
-        // добвляем Action`s
+        // добавляем Action`s
         $actionsOrder = \Yadikin\Bitrix24\Crm\Action\Actions::make(/** @var OrderFactory */$this);
 
         foreach($actionsOrder->getOnBeforeUpdate() as $action)
