@@ -350,10 +350,10 @@ class Actions implements ActionRegistryInteface
     {   
         /** @var ActionCollectionInteface */
         return $this->getFactoryCollection()
-                ->filter(fn(/** @var ActionFactoryInteface */ $action) => $action->getParams()->getEnable())
-                ->filter(fn(/** @var ActionFactoryInteface */ $action) => $action->getActionOperation() === $actionOperation)
-                ->filter(fn(/** @var ActionFactoryInteface */ $action) => $action->getEventOperation() === $eventOperation)
-                ->sort(fn(/** @var ActionFactoryInteface */ $a, /** @var ActionFactoryInteface */$b) 
+                ->filter(fn(/** @var ActionInteface */ $action) => $action->getParams()->getEnable())
+                ->filter(fn(/** @var ActionInteface */ $action) => $action->getActionOperation() === $actionOperation)
+                ->filter(fn(/** @var ActionInteface */ $action) => $action->getEventOperation() === $eventOperation)
+                ->sort(fn(/** @var ActionInteface */ $a, /** @var ActionInteface */$b) 
                             => ($sort === SortOperation::Desc) 
                                 ? $b->getParams()->getSort() <=> $a->getParams()->getSort()
                                 : $a->getParams()->getSort() <=> $b->getParams()->getSort()
@@ -374,6 +374,17 @@ class Actions implements ActionRegistryInteface
         /** @var ActionCollectionInteface */
         return static::$actions[$this->factory->getInstanceCode()];
     }
+    
+    /**
+     * @param string $name
+     * @return ActionInteface
+     */
+    public function getActtionByName(string $name) : ActionInteface
+    {
+        return $this->getFactoryCollection()
+                ->filter(fn(/** @var ActionInteface */ $action) => $action->getParams()->getName() === $name)
+                ->first();     
+    } 
     
     /**
      * @param FactoryInteface $factory
